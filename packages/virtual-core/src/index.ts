@@ -1150,9 +1150,7 @@ export class Virtualizer<
           // browser clamps this anchor sync to the old scroll max, keep the
           // intended target so _willUpdate can retry after the sizer grows.
           const target = this.getScrollOffset()
-          const maxAtWrite = this.getMaxScrollOffset()
-          this._clampedAdjustment =
-            target > maxAtWrite + 0.5 ? { target, maxAtWrite } : null
+          this._clampedAdjustment = this._clampedBy(target)
           this._scrollToOffset(target, {
             adjustments: undefined,
             behavior: undefined,
