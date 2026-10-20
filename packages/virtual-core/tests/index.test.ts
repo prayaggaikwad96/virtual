@@ -3971,7 +3971,6 @@ test('#1267: a new explicit scroll cancels a pending clamped anchor retry', () =
   virtualizer.scrollToOffset(20)
   expect(virtualizer['_clampedAdjustment']).toBeNull()
   expect(scrollToFn).toHaveBeenCalledTimes(2)
-
   ;(scrollElement as any).scrollHeight = 350
   virtualizer._willUpdate()
 
