@@ -1173,7 +1173,9 @@ export class Virtualizer<
   // may follow at all), and from `_willUpdate` for consumers that size it
   // during an asynchronous render. Both the clamped read-back and the
   // absence of one leave `_clampedAdjustment` set, so timing does not matter.
-  private _retryClampedAdjustment = () => {
+  // Framework adapters may call this after their rendered sizer commits.
+  // The pending target is cleared by any newer explicit scroll command.
+  _retryClampedAdjustment = () => {
     if (
       this._clampedAdjustment === null ||
       !this.scrollElement ||
