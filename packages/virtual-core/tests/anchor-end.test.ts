@@ -174,7 +174,7 @@ test('#1267: a new explicit scroll cancels a pending clamped anchor retry', () =
 
 test('#1267: an explicit scroll cancels a queued prepend anchor before update', () => {
   const messages = Array.from({ length: 5 }, (_, i) => ({ id: `m-${i}` }))
-  const { virtualizer, scrollToFn, setMessages } = createChatVirtualizer({
+  const { virtualizer, scrollElement, scrollToFn, setMessages } = createChatVirtualizer({
     messages,
     offset: 50,
   })
@@ -200,7 +200,7 @@ test('#1267: an explicit scroll cancels a queued prepend anchor before update', 
   expect(scrollToFn).toHaveBeenCalledTimes(1)
 
   // Growing the sizer later must not resurrect the discarded anchor either.
-  ;(virtualizer.scrollElement as any).scrollHeight = 350
+  ;(scrollElement as any).scrollHeight = 350
   virtualizer._willUpdate()
   expect(scrollToFn).toHaveBeenCalledTimes(1)
   expect(scrollToFn.mock.calls[0]![0]).toBe(20)
