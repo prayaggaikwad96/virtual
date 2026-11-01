@@ -98,16 +98,12 @@ function createChatVirtualizer({
     virtualizer,
     scrollElement,
     scrollToFn,
-    setMessages(
-      nextMessages: Array<{ id: string }>
-    ) {
+    setMessages(nextMessages: Array<{ id: string }>) {
       currentMessages = nextMessages
       virtualizer.setOptions(makeOptions())
-      if (growSizer) {
-        ;(scrollElement as any).scrollHeight =
-          scrollMargin + nextMessages.length * itemSize + paddingEnd
-      }
-      if (update) virtualizer._willUpdate()
+      ;(scrollElement as any).scrollHeight =
+        scrollMargin + nextMessages.length * itemSize + paddingEnd
+      virtualizer._willUpdate()
     },
     // Simulate the browser's scroll event after a write (or a gesture).
     emitScroll(nextOffset: number, isScrolling = false) {
