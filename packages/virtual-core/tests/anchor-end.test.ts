@@ -99,11 +99,7 @@ function createChatVirtualizer({
     scrollElement,
     scrollToFn,
     setMessages(
-      nextMessages: Array<{ id: string }>,
-      {
-        growSizer = true,
-        update = true,
-      }: { growSizer?: boolean; update?: boolean } = {},
+      nextMessages: Array<{ id: string }>
     ) {
       currentMessages = nextMessages
       virtualizer.setOptions(makeOptions())
