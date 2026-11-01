@@ -98,11 +98,16 @@ function createChatVirtualizer({
     virtualizer,
     scrollElement,
     scrollToFn,
-    setMessages(nextMessages: Array<{ id: string }>) {
+    setMessages(
+      nextMessages: Array<{ id: string }>,
+      { growSizer = true }: { growSizer?: boolean } = {},
+    ) {
       currentMessages = nextMessages
       virtualizer.setOptions(makeOptions())
-      ;(scrollElement as any).scrollHeight =
-        scrollMargin + nextMessages.length * itemSize + paddingEnd
+      if (growSizer) {
+        ;(scrollElement as any).scrollHeight =
+          scrollMargin + nextMessages.length * itemSize + paddingEnd
+      }
       virtualizer._willUpdate()
     },
     // Simulate the browser's scroll event after a write (or a gesture).
@@ -112,6 +117,29 @@ function createChatVirtualizer({
     },
   }
 }
+
+
+test('#1267: an explicit scroll command cancels a pending clamped prepend retry', () => {
+  const messages = Array.from({ length: 5 }, (_, i) => ({ id: `m-${i}` }))
+  const { virtualizer, scrollElement, scrollToFn, setMessages } =
+    createChatVirtualizer({ messages, offset: 50 })
+
+  setMessages([{ id: 'm--2' }, { id: 'm--1' }, ...messages], {
+    growSizer: false,
+  })
+
+  expect(virtualizer['_clampedAdjustment']).not.toBeNull()
+  scrollToFn.mockClear()
+
+  virtualizer.scrollToOffset(25)
+  expect(scrollToFn).toHaveBeenCalledTimes(1)
+  expect(scrollToFn.mock.calls[0]![0]).toBe(25)
+  expect(virtualizer['_clampedAdjustment']).toBeNull()
+
+  ;(scrollElement as any).scrollHeight = 450
+  virtualizer._willUpdate()
+  expect(scrollToFn).toHaveBeenCalledTimes(1)
+})
 
 test('anchorTo:end keeps visible content stable when older items are prepended', () => {
   const messages = Array.from({ length: 5 }, (_, i) => ({ id: `m-${i}` }))
