@@ -2496,10 +2496,9 @@ export class Virtualizer<
     kind: 'absolute' | 'relative',
   ) {
     // A new explicit command supersedes layout-driven work queued before it.
-    // Clear both before any iOS deferral so a later commit/retry cannot
-    // overwrite the user's newer scroll intent.
+    // Clear the pending prepend anchor before any iOS deferral so a later
+    // commit cannot overwrite the user's newer scroll intent.
     this.pendingScrollAnchor = null
-    this._clampedAdjustment = null
 
     const tail = this._iosGesture.tail()
     if (kind === 'absolute' && tail !== null) {
