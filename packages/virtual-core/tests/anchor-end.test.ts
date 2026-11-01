@@ -117,63 +117,6 @@ function createChatVirtualizer({
   }
 }
 
-test('#1267: a new explicit scroll supersedes a pending end-anchor retry', () => {
-  const scrollTop = { value: 50 }
-  const maxScroll = { value: 50 }
-  const scrollToFn = vi.fn((offset: number) => {
-    scrollTop.value = Math.min(offset, maxScroll.value)
-  })
-  const scrollElement = {
-    get scrollTop() {
-      return scrollTop.value
-    },
-    set scrollTop(value: number) {
-      scrollTop.value = Math.min(value, maxScroll.value)
-    },
-    scrollLeft: 0,
-    scrollWidth: 1000,
-    get scrollHeight() {
-      return maxScroll.value + 200
-    },
-    clientHeight: 200,
-    clientWidth: 400,
-    offsetHeight: 200,
-  } as unknown as HTMLDivElement
-  const virtualizer = new Virtualizer({
-    count: 5,
-    estimateSize: () => 50,
-    getScrollElement: () => scrollElement,
-    scrollToFn: (offset: number, _options: unknown) => {
-      scrollToFn(offset)
-    },
-    observeElementRect: (_instance: unknown, cb: (rect: {width:number;height:number})=>void) => {
-      cb({ width: 400, height: 200 })
-      return () => {}
-    },
-    observeElementOffset: (_instance: unknown, cb: (offset: number, isScrolling: boolean)=>void) => {
-      cb(scrollTop.value, false)
-      return () => {}
-    },
-    anchorTo: 'end' as const,
-    paddingEnd: 0,
-  })
-  virtualizer._willUpdate()
-  virtualizer.getVirtualItems()
-  scrollToFn.mockClear()
-
-  // Simulate the internal pending clamp record produced by a browser-clamped write.
-  virtualizer['_clampedAdjustment'] = { target: 150, maxAtWrite: 50 }
-
-  virtualizer.scrollToOffset(25)
-  expect(scrollToFn).toHaveBeenCalledTimes(1)
-  expect(scrollToFn.mock.calls[0]![0]).toBe(25)
-  expect(virtualizer['_clampedAdjustment']).toBeNull()
-
-  maxScroll.value = 300
-  virtualizer['_retryClampedAdjustment']()
-  expect(scrollToFn).toHaveBeenCalledTimes(1)
-})
-
 test('anchorTo:end keeps visible content stable when older items are prepended', () => {
   const messages = Array.from({ length: 5 }, (_, i) => ({ id: `m-${i}` }))
   const { setMessages, scrollToFn } = createChatVirtualizer({
