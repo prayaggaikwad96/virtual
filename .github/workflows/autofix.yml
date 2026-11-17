@@ -26,7 +26,9 @@ jobs:
       - name: Setup Tools
         uses: tanstack/config/.github/setup@e4b48f16568324f76f467aa4c2aac2f05db632c3 # main
       - name: Fix formatting
-        run: pnpm format
+        # autofix-ci intentionally refuses to commit changes under .github.
+        # Keep workflow files out of the formatter's write scope.
+        run: pnpm exec prettier --experimental-cli --ignore-unknown '**/*' --write --ignore-path .prettierignore --ignore-pattern '.github/**'
       - name: Apply fixes
         uses: autofix-ci/action@551dded8c6cc8a1054039c8bc0b8b48c51dfc6ef
         with:
