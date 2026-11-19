@@ -16,7 +16,9 @@ permissions:
 jobs:
   test:
     name: Test
-    runs-on: ubuntu-latest
+    # Playwright 1.56 does not ship Chromium for the Ubuntu 26.04 runner image.
+    # Pin the supported 24.04 image for deterministic browser installation.
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -35,6 +37,9 @@ jobs:
         run: pnpm run test:pr
   preview:
     name: Preview
+    # pkg-pr-new's GitHub App is installed on the upstream repository, not forks.
+    # Keep preview publishing enabled for TanStack/virtual and skip it in forks.
+    if: github.repository == 'TanStack/virtual'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
