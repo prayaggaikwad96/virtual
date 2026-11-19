@@ -37,6 +37,9 @@ jobs:
         run: pnpm run test:pr
   preview:
     name: Preview
+    # pkg-pr-new's GitHub App is installed on the upstream repository, not forks.
+    # Keep preview publishing enabled for TanStack/virtual and skip it in forks.
+    if: github.repository == 'TanStack/virtual'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
