@@ -29,6 +29,11 @@ allowBuilds:
   vue-demi: false # only required for vue 2 support
 
 overrides:
+  # Keep known vulnerable transitive dependency ranges from remaining in the lockfile.
+  # These constraints are bounded to patched compatible lines identified by Dependabot.
+  hono: ^4.13.16
+  glob: ^14.0.2
+  minimatch: ^11.0.1
   # Exactly one @marko/compiler in the graph. marko, @marko/vite, and
   # @marko/language-tools (via @marko/type-check) all accept ^5.39/^5.40 ranges;
   # letting the lockfile resolve them independently can split versions across
