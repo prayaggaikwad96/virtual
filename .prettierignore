@@ -7,6 +7,3 @@
 **/docs
 **/codemods/**/__testfixtures__
 pnpm-lock.yaml
-
-# Keep workflow YAML outside autofix.ci's writable scope.
-.github/
