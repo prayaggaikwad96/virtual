@@ -29,8 +29,8 @@ allowBuilds:
   vue-demi: false # only required for vue 2 support
 
 overrides:
-  # Keep known vulnerable transitive dependency ranges from remaining in the lockfile.
-  # These constraints are bounded to patched compatible lines identified by Dependabot.
+  # Candidate remediation for Dependabot's blocked security updates.
+  # Validate all consumers and regenerate the lockfile before merge.
   hono: ^4.13.16
   glob: ^14.0.2
   minimatch: ^11.0.1
