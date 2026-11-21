@@ -6,4 +6,5 @@
 **/dist
 **/docs
 **/codemods/**/__testfixtures__
+.github/**
 pnpm-lock.yaml
