@@ -29,6 +29,10 @@ allowBuilds:
   vue-demi: false # only required for vue 2 support
 
 overrides:
+  # Resolve Dependabot's security updates for direct root dependency chains.
+  # Validate compatibility and regenerate pnpm-lock.yaml before merge.
+  hono: ^4.13.16
+  minimatch: ^11.0.1
   # Exactly one @marko/compiler in the graph. marko, @marko/vite, and
   # @marko/language-tools (via @marko/type-check) all accept ^5.39/^5.40 ranges;
   # letting the lockfile resolve them independently can split versions across
