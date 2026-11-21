@@ -46,6 +46,8 @@ jobs:
       - name: Build Packages
         run: pnpm run build:all
       - name: Publish Previews
+        # The publisher app is installed only on the upstream repository; fork builds still run.
+        if: github.repository == 'TanStack/virtual'
         run: pnpx pkg-pr-new publish --pnpm --compact './packages/*' --template './examples/*/*'
   provenance:
     name: Provenance
