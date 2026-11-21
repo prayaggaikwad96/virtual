@@ -16,8 +16,7 @@ permissions:
 jobs:
   test:
     name: Test
-    # Playwright 1.56.1 does not support Ubuntu 26.04; use the supported LTS runner.
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -47,8 +46,6 @@ jobs:
       - name: Build Packages
         run: pnpm run build:all
       - name: Publish Previews
-        # pkg-pr-new is installed on the upstream repository, not downstream forks.
-        if: github.repository == 'TanStack/virtual'
         run: pnpx pkg-pr-new publish --pnpm --compact './packages/*' --template './examples/*/*'
   provenance:
     name: Provenance
