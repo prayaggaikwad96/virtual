@@ -1,0 +1,67 @@
+name: One-off security lockfile refresh
+
+on:
+  push:
+    branches:
+      - security/refresh-hono-minimatch-lockfile-2026-11-22
+
+permissions:
+  contents: read
+
+concurrency:
+  group: one-off-security-lockfile-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    if: github.ref == 'refs/heads/security/refresh-hono-minimatch-lockfile-2026-11-22'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: Check out isolated security branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: 24
+
+      - name: Install the repository-pinned pnpm version
+        run: npm install --global pnpm@11.9.0
+
+      - name: Regenerate dependency lockfile without running package scripts
+        run: pnpm install --lockfile-only --no-frozen-lockfile --ignore-scripts
+
+      - name: Assert patched security versions are present
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -F 'hono@4.13.19:' pnpm-lock.yaml
+          grep -F 'minimatch@3.1.4:' pnpm-lock.yaml
+          grep -F 'minimatch@9.0.7:' pnpm-lock.yaml
+          grep -F 'minimatch@10.2.5:' pnpm-lock.yaml
+          if grep -Eq '^  (hono@4\.12\.[0-9]+|minimatch@(3\.0\.[0-9]+|3\.1\.[0-3]|9\.0\.[0-6]|10\.1\.[0-9]+)):' pnpm-lock.yaml; then
+            echo "A vulnerable Hono or minimatch lockfile version remains." >&2
+            exit 1
+          fi
+
+      - name: Commit and push regenerated lockfile
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pnpm-lock.yaml
+          if git diff --cached --quiet; then
+            echo "No lockfile changes were generated." >&2
+            exit 1
+          fi
+          git commit -m "fix(deps): regenerate Hono and minimatch lockfile"
+          git push origin "HEAD:refs/heads/${GITHUB_REF_NAME}"
+
+      - name: Verify frozen lockfile installation without scripts
+        run: pnpm install --frozen-lockfile --ignore-scripts
