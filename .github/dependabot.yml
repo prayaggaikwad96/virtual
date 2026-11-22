@@ -1,0 +1,36 @@
+version: 2
+
+updates:
+  # TanStack Virtual is a pnpm workspace; Dependabot supports pnpm lockfiles
+  # through the npm ecosystem configuration.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "04:00"
+      timezone: Asia/Kolkata
+    open-pull-requests-limit: 8
+    cooldown:
+      default-days: 7
+    groups:
+      npm-minor-and-patch:
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "04:30"
+      timezone: Asia/Kolkata
+    open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
+    groups:
+      github-actions-minor-and-patch:
+        update-types:
+          - minor
+          - patch
