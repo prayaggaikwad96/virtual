@@ -35,3 +35,11 @@ overrides:
   # entries, and two compiler instances in one process fail every .marko compile
   # with "Unable to access Marko File outside of a compilation".
   '@marko/compiler': 5.40.0
+  # Hono: update affected 4.x releases to the latest patched 4.x line.
+  "hono@>=4.12.4 <4.13.11": 4.13.19
+  # minimatch: keep each existing major line on its corresponding patched release.
+  "minimatch@3.0.8": 3.1.4
+  "minimatch@3.1.2": 3.1.4
+  "minimatch@9.0.3": 9.0.7
+  "minimatch@9.0.5": 9.0.7
+  "minimatch@10.1.1": 10.2.3
