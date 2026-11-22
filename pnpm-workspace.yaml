@@ -35,3 +35,9 @@ overrides:
   # entries, and two compiler instances in one process fail every .marko compile
   # with "Unable to access Marko File outside of a compilation".
   '@marko/compiler': 5.40.0
+
+  # Resolve published vulnerable transitive versions without crossing major APIs.
+  hono: 4.13.19
+  'minimatch@<4': 3.1.4
+  'minimatch@>=9 <10': 9.0.7
+  'minimatch@>=10 <11': 10.2.5
