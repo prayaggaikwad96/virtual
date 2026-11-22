@@ -12,7 +12,7 @@ updates:
       timezone: Asia/Kolkata
     open-pull-requests-limit: 8
     cooldown:
-      default-days: 3
+      default-days: 7
     groups:
       npm-minor-and-patch:
         update-types:
@@ -27,6 +27,8 @@ updates:
       time: "04:30"
       timezone: Asia/Kolkata
     open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
     groups:
       github-actions-minor-and-patch:
         update-types:
