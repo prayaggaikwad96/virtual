@@ -30,7 +30,7 @@ allowBuilds:
 
 overrides:
   # Resolve Dependabot's security updates for direct root dependency chains.
-  # Validate compatibility and regenerate pnpm-lock.yaml before merge.
+  # Lockfile regeneration is required before merge; do not bypass frozen-lockfile CI.
   hono: ^4.13.16
   minimatch: ^11.0.1
   # Exactly one @marko/compiler in the graph. marko, @marko/vite, and
