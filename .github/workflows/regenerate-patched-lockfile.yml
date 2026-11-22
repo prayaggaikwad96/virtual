@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - security/regenerate-hono-minimatch-lockfile-2026-11-22
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
 
 permissions:
   contents: read
