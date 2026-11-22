@@ -103,7 +103,9 @@ export interface Input {
     }
     retryFrame = current.targetWindow?.requestAnimationFrame(() => {
       retryFrame = null
-      current._retryClampedAdjustment()
+      ;(
+        current as unknown as { _retryClampedAdjustment: () => void }
+      )._retryClampedAdjustment()
     }) ?? null
   }
 
