@@ -1,0 +1,68 @@
+name: Regenerate patched dependency lockfile
+
+on:
+  push:
+    branches:
+      - security/regenerate-hono-minimatch-lockfile-2026-11-22
+
+permissions:
+  contents: read
+
+jobs:
+  resolve:
+    name: Resolve dependencies without executing install scripts
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - name: Check out the maintenance branch
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      - name: Install the repository-pinned pnpm version
+        run: npm install --global pnpm@11.9.0
+      - name: Resolve lockfile only
+        run: pnpm install --lockfile-only --ignore-scripts --no-frozen-lockfile
+      - name: Upload the generated lockfile
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: patched-pnpm-lockfile
+          path: pnpm-lock.yaml
+          if-no-files-found: error
+          retention-days: 1
+
+  commit-lockfile:
+    name: Commit only the generated lockfile
+    needs: resolve
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: Check out the maintenance branch
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: security/regenerate-hono-minimatch-lockfile-2026-11-22
+      - name: Download generated lockfile
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: patched-pnpm-lockfile
+          path: .generated-lockfile
+      - name: Commit lockfile if it changed
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s .generated-lockfile/pnpm-lock.yaml
+          cp .generated-lockfile/pnpm-lock.yaml pnpm-lock.yaml
+          if git diff --quiet -- pnpm-lock.yaml; then
+            echo "The lockfile is already current."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pnpm-lock.yaml
+          git commit -m "fix(deps): regenerate lockfile with patched transitive dependencies"
+          git push origin HEAD:security/regenerate-hono-minimatch-lockfile-2026-11-22
