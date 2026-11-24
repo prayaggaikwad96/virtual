@@ -1324,7 +1324,12 @@ export class Virtualizer<
           // retired it) still gets the anchor sync.
         } else {
           this._followAnchor(anchor.delta)
-          this._scrollToOffset(this.getScrollOffset())
+          const target = this.getScrollOffset()
+          // The consumer may not have committed the larger sizer yet. A prepend
+          // anchor write can therefore be clamped to the old max just like a
+          // resize compensation; retain it for the next _willUpdate after commit.
+          this._clampedAdjustment = this._clampedBy(target)
+          this._scrollToOffset(target)
         }
       } else {
         this.scrollToEnd({ behavior: anchor.behavior })
