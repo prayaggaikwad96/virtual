@@ -17,6 +17,6 @@
     "@marko/language-tools": "^2.6.2",
     "@marko/type-check": "3.1.1",
     "typescript": "5.9.3",
-    "vite": "^6.4.2"
+    "vite": "^6.4.5"
   }
 }
